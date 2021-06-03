@@ -10,7 +10,7 @@ router
       const getWishlistItem = wishlistItem.map((item) => {
         const { _id, ...doc } = item._id._doc;
         return {
-          id: _id,
+          _id: _id,
           ...doc,
           isInWishlist: item.isInWishlist,
         };
@@ -18,29 +18,27 @@ router
       res.status(200).json(getWishlistItem);
     } catch (error) {
       res
-        .status(400)
+        .status(502)
         .send({ success: false, message: "unable to show wishlist items" });
     }
   })
   .post(async (req, res) => {
     try {
       const product = req.body;
-      const { id } = req.body;
-      const wishlistItem = new Wishlist({ _id: id });
+      const wishlistItem = new Wishlist({ _id:req.body._id});
       await wishlistItem.save();
       res.status(201).json(product);
     } catch (error) {
       res
-        .status(400)
+        .status(201)
         .send({ success: false, message: "unable to add to wishlist" });
     }
   });
 
-router.route("/:id").delete(async (req, res) => {
+router.route("/:_id").delete(async (req, res) => {
   try {
-    const { id } = req.params;
-    await Wishlist.findByIdAndDelete(id);
-    res.status(204).json({id});
+    await Wishlist.findByIdAndDelete(req.params._id);
+    res.status(204).json({});
   } catch (error) {
     res
       .status(400)

@@ -10,10 +10,9 @@ router
       const getCartItem = cartItem.map((item) => {
         const { _id, ...doc } = item._id._doc;
         return {
-          id: _id,
+          _id: _id,
           ...doc,
           quantity: item.quantity,
-          isInCart: item.isInCart,
         };
       });
       res.json(getCartItem);
@@ -26,8 +25,8 @@ router
   .post(async (req, res) => {
     try {
       const product = req.body;
-      const { id, quantity } = product;
-      const cartItem = new Cart({ _id: id, quantity });
+      const { _id, quantity } = product;
+      const cartItem = new Cart({ _id: _id, quantity,  });
       await cartItem.save();
       res.status(201).json(product);
     } catch (error) {
@@ -38,13 +37,13 @@ router
   });
 
 router
-  .route("/:id")
+  .route("/:_id")
   .post(async (req, res) => {
     try {
       const { quantity } = req.body;
-      const { id } = req.params;
-      await Cart.findByIdAndUpdate(id, { quantity });
-      res.status(201).json({ quantity });
+      const { _id } = req.params;
+      await Cart.findByIdAndUpdate(_id, { quantity });
+      res.status(201).json({ _id,quantity });
     } catch (error) {
       res
         .status(400)
@@ -53,8 +52,7 @@ router
   })
   .delete(async (req, res) => {
     try {
-      const { id } = req.params;
-      await Cart.findByIdAndDelete(id);
+      await Cart.findByIdAndDelete(req.params._id);
       res.status(204).json({});
     } catch (error) {
       res

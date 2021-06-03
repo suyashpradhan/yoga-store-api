@@ -9,14 +9,14 @@ const discount = [10, 20, 50, 70];
 const ratings = [1.0, 2.0, 3.0, 4.0, 5.0];
 
 //Fake Data
-const productsData = [...Array(100)].map((_) => ({
+const productsData = [...Array(50)].map((_) => ({
   name: faker.commerce.productName(),
   image: faker.random.image(),
   originalPrice: Number(faker.commerce.price() * 5),
   discountedPrice: Number(faker.commerce.price()),
   category: faker.random.arrayElement([...category]),
   brand: faker.random.arrayElement([...brand]),
-  ratings: faker.random.arrayElement([...ratings]).toFixed(1),
+  ratings: faker.random.arrayElement([...ratings]),
   discount: faker.random.arrayElement([...discount]),
   inStock: faker.datatype.boolean(),
   fastDelivery: faker.datatype.boolean(),
