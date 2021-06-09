@@ -1,39 +1,46 @@
 const mongoose = require("mongoose");
-const Joi = require("joi")
+const { isEmail, isStrongPassword } = require("validator");
 const { Schema } = mongoose;
 
-//User Schema
 const userSchema = new Schema({
-  fullName: String,
-  userName: String,
-  email: String,
-  password: String,
+  fullName: {
+    type: String,
+    required: [true, "Full name is required"],
+  },
+  userName: {
+    type: String,
+    required: [true, "User name is required"],
+    unique: true,
+  },
+  email: {
+    type: String,
+    required: [true, "Email is required"],
+    unique: true,
+    lowercase: true,
+    validate: [isEmail, "Please enter a valid email"],
+  },
+  password: {
+    type: String,
+    required: [true, "Password is required"],
+    validate: [
+      isStrongPassword,
+      "Password requirements: Minimum 8 characters long, One Uppercase Character, One Lowercase Character & One Special Character",
+    ],
+  },
   created_at: {
     type: Date,
-    default: Date.now
-  }
-})
+    default: Date.now,
+  },
+});
 
-const schema = Joi.object({
+//Joi Validation
+/* const schema = Joi.object({
   fullName: Joi.string().required(),
   userName: Joi.string().min(8).required(),
   email: Joi.string().min(6).required().email(),
   password: Joi.string().min(6).required()
-});
+}); */
 
-//Joi Validation
-/* userSchema.methods.joiValidate = (obj) => {
-  const schema = {
-    fullName: Joi.types.String().required(),
-    userName: Joi.types.String().min(6).max(30).required(),
-    email: Joi.types.String().email().required(),
-    password: Joi.types.String().min(8).max(30).regex(/[a-zA-Z0-9]{3,30}/).required(),
-    created: Joi.types.Date(),
-  }
+const User = mongoose.model("User", userSchema);
 
-  return Joi.validate(obj, schema);
-}
- */
-const User = mongoose.model('User', userSchema);
-
-module.exports = {User,schema};
+module.exports = { User };
