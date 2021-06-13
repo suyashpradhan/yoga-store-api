@@ -1,11 +1,10 @@
 const jwt = require("jsonwebtoken");
-const TOKEN_SECRET = process.env['TOKEN_SECRET']
+require("dotenv").config();
 
-const maxAge = 1*24*60*60
+const maxAge = 1 * 24 * 60 * 60;
 
-const createToken = (id)=>{
-  return jwt.sign({id},TOKEN_SECRET,{expiresIn:maxAge})
-}
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.TOKEN_SECRET, { expiresIn: maxAge });
+};
 
-
-module.exports = createToken
+module.exports = createToken;

@@ -2,11 +2,12 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 4000;
 const dbConnection = require("./database/database");
-const productRoute = require("./routes/products.router");
-const cartRoute = require("./routes/cart.router");
-const wishlistRoute = require("./routes/wishlist.router");
-const registerRoute = require("./routes/register.router");
-const loginRoute = require("./routes/login.router");
+const productRoute = require("./routes/products.route");
+const bagRoute = require("./routes/bag.route");
+const wishlistRoute = require("./routes/wishlist.route");
+const registerRoute = require("./routes/register.route");
+const loginRoute = require("./routes/login.route");
+const authValidator = require("./middlewares/authValidator.middleware");
 const cors = require("cors");
 
 app.use(cors());
@@ -20,8 +21,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/products", productRoute);
-app.use("/cart", cartRoute);
-app.use("/wishlist", wishlistRoute);
+app.use("/bag", authValidator, bagRoute);
+app.use("/wishlist", authValidator, wishlistRoute);
 app.use("/register", registerRoute);
 app.use("/login", loginRoute);
 

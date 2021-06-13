@@ -21,7 +21,7 @@ const ProductSchema = new Schema({
 });
 
 //Creating New Model
-const Product = mongoose.model("product", ProductSchema);
+const Product = mongoose.model("Product", ProductSchema);
 
 //Adding products into our model
 const products = async () => {

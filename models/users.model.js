@@ -1,16 +1,12 @@
 const mongoose = require("mongoose");
-const { isEmail, isStrongPassword } = require("validator");
+const bcrypt = require("bcrypt");
+const { isEmail, isStrongPassword, isLowercase } = require("validator");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
   fullName: {
     type: String,
     required: [true, "Full name is required"],
-  },
-  userName: {
-    type: String,
-    required: [true, "User name is required"],
-    unique: true,
   },
   email: {
     type: String,
@@ -27,20 +23,45 @@ const userSchema = new Schema({
       "Password requirements: Minimum 8 characters long, One Uppercase Character, One Lowercase Character & One Special Character",
     ],
   },
+  wishlist: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Wishlist",
+    },
+  ],
+  bag: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Bag",
+    },
+  ],
   created_at: {
     type: Date,
     default: Date.now,
   },
 });
 
-//Joi Validation
-/* const schema = Joi.object({
-  fullName: Joi.string().required(),
-  userName: Joi.string().min(8).required(),
-  email: Joi.string().min(6).required().email(),
-  password: Joi.string().min(6).required()
-}); */
+//Middleware after user is created!
+userSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
 
+//Static method for login
+userSchema.statics.login = async function (email, password) {
+  const matchedUser = await this.findOne({ email });
+
+  if (matchedUser) {
+    const auth = await bcrypt.compare(password, matchedUser.password);
+    if (auth) {
+      return matchedUser;
+    }
+  }
+  throw Error("invalid");
+};
+
+//Created User Model
 const User = mongoose.model("User", userSchema);
 
-module.exports = { User };
+module.exports = { User, userSchema };

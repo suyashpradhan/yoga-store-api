@@ -1,13 +1,16 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const wishlistSchema = new Schema({
+const bagSchema = new Schema({
   _id: {
     type: Schema.Types.ObjectId,
     ref: "Product",
   },
+  quantity: {
+    type: Number,
+  },
 });
 
-const Wishlist = mongoose.model("Wishlist", wishlistSchema);
+const Bag = mongoose.model("Bag", bagSchema);
 
-module.exports = { Wishlist };
+module.exports = { Bag };
