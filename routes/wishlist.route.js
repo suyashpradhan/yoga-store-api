@@ -12,7 +12,6 @@ router
         return {
           id: _id,
           ...doc,
-          isInWishlist: item.isInWishlist,
         };
       });
       res.status(200).json(getWishlistItem);
@@ -24,11 +23,10 @@ router
   })
   .post(async (req, res) => {
     try {
-      const product = req.body;
       const { id } = req.body;
       const wishlistItem = new Wishlist({ _id: id });
-      await wishlistItem.save();
-      res.status(201).json(product);
+      const savedWishlist = await wishlistItem.save();
+      res.status(201).json(savedWishlist);
     } catch (error) {
       res
         .status(400)
@@ -40,7 +38,7 @@ router.route("/:id").delete(async (req, res) => {
   try {
     const { id } = req.params;
     await Wishlist.findByIdAndDelete(id);
-    res.status(204).json({id});
+    res.status(204).json({ id });
   } catch (error) {
     res
       .status(400)

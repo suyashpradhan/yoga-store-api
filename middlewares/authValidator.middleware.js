@@ -15,14 +15,14 @@ const authValidator = async (req, res, next) => {
     const { id } = jwt.verify(token, process.env.TOKEN_SECRET);
 
     const user = await User.findById({ id })
-      .select("-password -__v")
+      .select("")
       .populate({
         path: "bag",
-        populate: { path: "_id" },
+        populate: { path: "id" },
       })
       .populate({
         path: "wishlist",
-        populate: { path: "_id" },
+        populate: { path: "id" },
       });
 
     if (!user) {
