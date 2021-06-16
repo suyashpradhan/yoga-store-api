@@ -1,6 +1,6 @@
 const errorHandler = (err) => {
-  console.log(err.message, err.code);
   let errors = { email: "", password: "" };
+  console.log(err);
 
   if (err.code === 11000) {
     errors.email = "Email id already exists, please try logging in";

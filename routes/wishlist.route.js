@@ -10,7 +10,7 @@ router
       const getWishlistItem = wishlistItem.map((item) => {
         const { _id, ...doc } = item._id._doc;
         return {
-          id: _id,
+          _id: _id,
           ...doc,
         };
       });
@@ -23,10 +23,9 @@ router
   })
   .post(async (req, res) => {
     try {
-      const { id } = req.body;
-      const wishlistItem = new Wishlist({ _id: id });
+      const wishlistItem = new Wishlist({ _id: req.body._id });
       const savedWishlist = await wishlistItem.save();
-      res.status(201).json(savedWishlist);
+      res.status(201).json({ savedWishlist });
     } catch (error) {
       res
         .status(400)
@@ -34,11 +33,11 @@ router
     }
   });
 
-router.route("/:id").delete(async (req, res) => {
+router.route("/:_id").delete(async (req, res) => {
   try {
-    const { id } = req.params;
-    await Wishlist.findByIdAndDelete(id);
-    res.status(204).json({ id });
+    const { _id } = req.params;
+    const productId = await Wishlist.findByIdAndDelete(_id);
+    res.status(201).json({ success: true, message: "Item deleted", productId });
   } catch (error) {
     res
       .status(400)
