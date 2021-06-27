@@ -34,6 +34,12 @@ const userSchema = new Schema({
       ref: "Bag",
     },
   ],
+  address: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Address",
+    },
+  ],
   created_at: {
     type: Date,
     default: Date.now,

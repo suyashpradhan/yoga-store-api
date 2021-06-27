@@ -7,6 +7,7 @@ const bagRoute = require("./routes/bag.route");
 const wishlistRoute = require("./routes/wishlist.route");
 const registerRoute = require("./routes/register.route");
 const loginRoute = require("./routes/login.route");
+const addressRoute = require("./routes/address.route");
 const authValidator = require("./middlewares/authValidator.middleware");
 const cors = require("cors");
 
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 app.use("/products", productRoute);
 app.use("/bag", authValidator, bagRoute);
 app.use("/wishlist", authValidator, wishlistRoute);
+app.use("/address", authValidator, addressRoute);
 app.use("/register", registerRoute);
 app.use("/login", loginRoute);
 

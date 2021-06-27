@@ -14,6 +14,7 @@ router.route("/").post(async (req, res) => {
       password,
       wishlist: [],
       bag: [],
+      address: [],
     });
     const token = createToken(savedUser._id);
     res.status(200).json({
