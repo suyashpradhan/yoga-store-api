@@ -4,20 +4,59 @@ const { Schema } = mongoose;
 
 //Defining Product Schema
 const ProductSchema = new Schema({
-  id: Schema.Types.ObjectId,
-  name: String,
-  image: String,
-  originalPrice: Number,
-  discountedPrice: Number,
-  category: String,
-  brand: String,
-  ratings: Number,
-  discount: Number,
-  totalPurchase: Number,
-  inStock: Boolean,
-  fastDelivery: Boolean,
-  yogaAssured: Boolean,
-  availableQty: Number,
+  name: {
+    type: String,
+    required: [true, "Name Is Required"],
+  },
+  image: {
+    type: String,
+    required: [true, "image Is Required"],
+  },
+  originalPrice: {
+    type: Number,
+    required: [true, "originalPrice Is Required"],
+  },
+  discountedPrice: {
+    type: Number,
+    required: [true, "discountedPrice Is Required"],
+  },
+  /*  categoryId: {
+    type: Schema.Types.ObjectId,
+    ref: "Category",
+    required: [true, "categoryId Is Required"],
+  }, */
+  brand: {
+    type: String,
+    required: [true, "brand Is Required"],
+  },
+  ratings: {
+    type: Number,
+    required: [true, "ratings Is Required"],
+  },
+  discount: {
+    type: Number,
+    required: [true, "discount Is Required"],
+  },
+  totalPurchase: {
+    type: Number,
+    required: [true, "image Is Required"],
+  },
+  inStock: {
+    type: Boolean,
+    required: [true, "inStock Is Required"],
+  },
+  fastDelivery: {
+    type: Boolean,
+    required: [true, "fastDelivery Is Required"],
+  },
+  yogaAssured: {
+    type: Boolean,
+    required: [true, "yogaAssured Is Required"],
+  },
+  availableQty: {
+    type: Number,
+    required: [true, "availableQty Is Required"],
+  },
 });
 
 //Creating New Model

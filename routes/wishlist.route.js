@@ -1,8 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { Wishlist } = require("../models/wishlist.model");
+const {
+  createUserWishlist,
+  fetchUserWishlist,
+  addItemInWishlist,
+} = require("../controllers/wishlist.controller");
 
-router
+/* router
   .route("/")
   .get(async (req, res) => {
     try {
@@ -43,6 +47,9 @@ router.route("/:_id").delete(async (req, res) => {
       .status(400)
       .send({ success: false, message: "unable to delete wishlist item" });
   }
-});
+}); */
 
+router.use(createUserWishlist);
+
+router.route("/").get(fetchUserWishlist).post(addItemInWishlist);
 module.exports = router;

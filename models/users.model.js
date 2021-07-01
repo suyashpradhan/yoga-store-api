@@ -3,8 +3,16 @@ const bcrypt = require("bcrypt");
 const { isEmail, isStrongPassword } = require("validator");
 const { Schema } = mongoose;
 
-const userSchema = new Schema({
-  fullName: {
+const UserSchema = new Schema({
+  firstName: {
+    type: String,
+    required: [true, "Full name is required"],
+  },
+  lastName: {
+    type: String,
+    required: [false, "Full name is optional"],
+  },
+  userName: {
     type: String,
     required: [true, "Full name is required"],
   },
@@ -22,24 +30,6 @@ const userSchema = new Schema({
       "Password requirements: Minimum 8 characters long, One Uppercase Character, One Lowercase Character & One Special Character",
     ],
   },
-  wishlist: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Wishlist",
-    },
-  ],
-  bag: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Bag",
-    },
-  ],
-  address: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Address",
-    },
-  ],
   created_at: {
     type: Date,
     default: Date.now,
@@ -47,14 +37,14 @@ const userSchema = new Schema({
 });
 
 //Middleware after user is created!
-userSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
 //Static method for login
-userSchema.statics.login = async function (email, password) {
+UserSchema.statics.login = async function (email, password) {
   const matchedUser = await this.findOne({ email });
 
   if (matchedUser) {
@@ -67,6 +57,6 @@ userSchema.statics.login = async function (email, password) {
 };
 
 //Created User Model
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", UserSchema);
 
-module.exports = { User, userSchema };
+module.exports = { User, UserSchema };
