@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const errorHandler = require("../utils/errorHandling.js");
-const createToken = require("../utils/createToken.js");
 const { User } = require("../models/users.model");
 const { Wishlist } = require("../models/wishlist.model.js");
 
 router.route("/").post(async (req, res) => {
-  const { fullName, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   try {
     const savedUser = await User.create({
-      fullName,
+      firstName,
+      lastName,
       email,
       password,
     });

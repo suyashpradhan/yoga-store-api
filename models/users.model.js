@@ -12,10 +12,6 @@ const UserSchema = new Schema({
     type: String,
     required: [false, "Full name is optional"],
   },
-  userName: {
-    type: String,
-    required: [true, "Full name is required"],
-  },
   email: {
     type: String,
     required: [true, "Email is required"],
