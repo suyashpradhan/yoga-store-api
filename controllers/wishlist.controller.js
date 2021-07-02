@@ -1,66 +1,116 @@
-const mongoose = require("mongoose");
 const { Wishlist } = require("../models/wishlist.model");
-const {
-  getWishlistItems,
-  itemInWishlistExists,
-} = require("../utils/wishlist.utils");
 
-const createUserWishlist = async (req, res, next) => {
-  const { user } = req;
-
+const findUserWishlist = async (req, res, next) => {
   try {
-    let newWishlist = await Wishlist.findOne({ userId: user._id });
+    const { user } = req;
+    let wishlist = await Wishlist.findOne({ userId: user._id });
 
-    if (!newWishlist) {
-      newWishlist = new Wishlist({ user_Id: user._id, products: [] });
-      newWishlist = await newWishlist.save();
+    if (!wishlist) {
+      wishlist = new Wishlist({ userId: user._id, products: [] });
+      wishlist = await wishlist.save();
     }
-    req.newWishlist = newWishlist;
+
+    req.wishlist = wishlist;
     next();
-  } catch (e) {
+  } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: "Unable to retrive wishlist details",
+      errorMessage: error.message,
     });
   }
 };
 
-const fetchUserWishlist = async (req, res) => {
+const getWishlistItems = async (wishlist) => {
+  wishlist.products = wishlist.products.filter((product) => product.isActive);
+  wishlist = await wishlist.populate("products._id").execPopulate();
+  return wishlist.products.map((product) => product._id);
+};
+
+const getUserWishlist = async (req, res) => {
   try {
     let { wishlist } = req;
-    let wishlistItem = await getWishlistItems(wishlist);
-    res.status(200).json({
-      success: true,
-      message: "User Wishlist",
-      wishlistItem,
-    });
-  } catch (e) {
+    let wishlistItems = await getWishlistItems(wishlist);
+    res.json({ success: true, wishlistItems });
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Failed to fetch the wishlist",
+      message: "Unable to retrive the wishlist",
+      errMessage: err.message,
     });
   }
 };
 
 const addItemInWishlist = async (req, res) => {
-  const { _id } = req.body;
+  /* const { _id } = req.body;
   const { wishlist } = req;
 
-  if (itemInWishlistExists(wishlist)) {
-    for (item of wishlist.products) {
-      if (item._id === _id) {
-        item.isActive = !item.isActive;
+  let resStatus;
+  const productExists = wishlist.products.some((product) => product._id == _id);
+  if (productExists) {
+    resStatus = 200;
+    for (let product of wishlist.products) {
+      if (product._id == _id) {
+        product.isActive = !product.isActive;
         break;
       }
     }
   } else {
+    resStatus = 201;
     wishlist.products.push({ _id, isActive: true });
-    res.status(200).json({ success: true });
   }
 
-  const updatedWishlist = await wishlist.save();
-  const savedWishlist = await getWishlistItems(updatedWishlist);
-  res.status(200).json({ success: true, wishlist: savedWishlist });
+  let updatedWishlist = await wishlist.save();
+  let wishlistItems = await getWishlistItems(updatedWishlist); */
+  /* try {
+    wishlist.products.push({ _id, isActive: true });
+    let updatedWishlist = await wishlist.save();
+    let wishlistItems = await getWishlistItems(updatedWishlist);
+    res.status(200).json({ success: true, wishlist: wishlistItems });
+  } catch (e) {
+    res.status(500).json({
+      success: false,
+      message: "Something Went Wrong",
+      errMessage: err.message,
+    }); */
 };
 
-module.exports = { createUserWishlist, fetchUserWishlist, addItemInWishlist };
+/* let resStatus;
+  const productExists = wishlist.products.some((product) => product._id == _id);
+  if (productExists) {
+    resStatus = 200;
+    for (let product of wishlist.products) {
+      if (product._id == _id) {
+        product.isActive = !product.isActive;
+        break;
+      }
+    }
+  } else {
+    resStatus = 201;
+    wishlist.products.push({ _id, isActive: true });
+  }
+
+  let updatedWishlist = await wishlist.save();
+  let wishlistItems = await getWishlistItems(updatedWishlist); 
+  
+
+  elete(async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const productId = await Wishlist.findByIdAndDelete(_id);
+    res.status(201).json({ success: true, message: "Item deleted", productId });
+  } catch (error) {
+    res
+      .status(400)
+      .send({ success: false, message: "unable to delete wishlist item" });
+  }
+})
+  
+  
+  */
+
+module.exports = {
+  findUserWishlist,
+  getUserWishlist,
+  addItemInWishlist,
+};

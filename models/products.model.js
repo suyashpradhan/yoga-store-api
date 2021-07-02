@@ -20,11 +20,6 @@ const ProductSchema = new Schema({
     type: Number,
     required: [true, "discountedPrice Is Required"],
   },
-  /*  categoryId: {
-    type: Schema.Types.ObjectId,
-    ref: "Category",
-    required: [true, "categoryId Is Required"],
-  }, */
   brand: {
     type: String,
     required: [true, "brand Is Required"],

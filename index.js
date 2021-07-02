@@ -11,8 +11,8 @@ const addressRoute = require("./routes/address.route");
 const authValidator = require("./middlewares/authValidator.middleware");
 const cors = require("cors");
 
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
 //DB Connection Function
 dbConnection();

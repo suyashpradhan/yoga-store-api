@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const { isEmail, isStrongPassword } = require("validator");
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
@@ -10,21 +9,15 @@ const UserSchema = new Schema({
   },
   lastName: {
     type: String,
-    required: [false, "Full name is optional"],
   },
   email: {
     type: String,
     required: [true, "Email is required"],
     lowercase: true,
-    validate: [isEmail, "Please enter a valid email"],
   },
   password: {
     type: String,
     required: [true, "Password is required"],
-    validate: [
-      isStrongPassword,
-      "Password requirements: Minimum 8 characters long, One Uppercase Character, One Lowercase Character & One Special Character",
-    ],
   },
   created_at: {
     type: Date,
@@ -41,7 +34,9 @@ UserSchema.pre("save", async function (next) {
 
 //Static method for login
 UserSchema.statics.login = async function (email, password) {
+  console.log(email, password);
   const matchedUser = await this.findOne({ email });
+  console.log(matchedUser);
 
   if (matchedUser) {
     const auth = await bcrypt.compare(password, matchedUser.password);
