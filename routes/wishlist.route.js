@@ -8,5 +8,5 @@ const {
 
 router.use(findUserWishlist);
 
-router.route("/").get(getUserWishlist).post(addItemInWishlist);
+router.route("/").get(getUserWishlist).post(updateWishlist);
 module.exports = router;
