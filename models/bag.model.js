@@ -2,15 +2,17 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const BagItemSchema = new Schema({
-  productId: {
+  _id: {
     type: Schema.Types.ObjectId,
     ref: "Product",
   },
   quantity: {
     type: Number,
-    required: [true, "Product quantity is required"],
     default: 1,
   },
+  isInBag:{
+    type:Boolean
+  }
 });
 
 const BagSchema = new Schema({

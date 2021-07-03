@@ -9,7 +9,7 @@ router.route("/").post(async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({});
+    const user = await User.findOne({email:email});
     if (user.email) {
       const auth = await bcrypt.compare(password, user.password);
       if (auth) {
