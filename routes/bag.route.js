@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const { createUserBag, getUserBag, bagAction, emptyBag } = require("../controllers/bag.controller")
+const { createUserBag, getUserBag, addProductInBag, emptyBag } = require("../controllers/bag.controller")
 
 router.use(createUserBag);
 
 router.route("/")
 .get(getUserBag)
-.post(bagAction)
+.post(addProductInBag)
 .delete(emptyBag);
 
 
