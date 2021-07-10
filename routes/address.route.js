@@ -1,10 +1,15 @@
 const express = require("express");
-const {
-  getAllAdressess,
-  addNewAddress,
-} = require("../controllers/address.controller");
 const router = express.Router();
+const { createUserAddressDocument,
+  fetchUserAddress,
+  addNewAddress,
+  removeUserAddress } = require("../controllers/address.controller");
 
-router.route("/").get(getAllAdressess).post(addNewAddress);
+router.use(createUserAddressDocument);
+
+router.route("/")
+  .get(fetchUserAddress)
+  .post(addNewAddress)
+  .put(removeUserAddress);
 
 module.exports = router;
