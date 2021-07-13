@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const {
-  findUserWishlist,
-  getUserWishlist,
-  addItemInWishlist,
+  createUserWishlistDocument,
+  fetchUserWishlist,
+  actionOnWishlist,
 } = require("../controllers/wishlist.controller");
 
-router.use(findUserWishlist);
+router.use(createUserWishlistDocument);
 
-router.route("/").get(getUserWishlist).post(addItemInWishlist)
+router.route("/").get(fetchUserWishlist).post(actionOnWishlist)
 module.exports = router;

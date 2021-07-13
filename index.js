@@ -17,6 +17,7 @@ app.use(cors());
 //DB Connection Function
 dbConnection();
 
+
 app.get("/", (req, res) => {
   res.send("YogaStore API");
 });
