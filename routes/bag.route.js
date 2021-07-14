@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const { createUserBag, getUserBag, addProductInBag, emptyBag } = require("../controllers/bag.controller")
+const { createUserBagDocument,
+  fetchUserBag,
+  actionOnBag,
+  emptyBag } = require("../controllers/bag.controller");
 
-router.use(createUserBag);
+router.use(createUserBagDocument);
 
 router.route("/")
-.get(getUserBag)
-.post(addProductInBag)
-.delete(emptyBag);
-
+  .get(fetchUserBag)
+  .post(actionOnBag)
+  .delete(emptyBag);
 
 module.exports = router;

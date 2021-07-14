@@ -8,9 +8,8 @@ const BagItemSchema = new Schema({
   },
   quantity: {
     type: Number,
-    default: 1,
   },
-  isInBag:{
+  isActive:{
     type:Boolean
   }
 });

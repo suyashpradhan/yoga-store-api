@@ -1,5 +1,5 @@
 const Wishlist = require("../models/wishlist.model");
-const {populateProducts} = require('../utils/populateProducts.util')
+const { populateProducts } = require('../utils/populateProducts.util')
 
 const createUserWishlistDocument = async (req, res, next) => {
   try {
@@ -21,7 +21,6 @@ const createUserWishlistDocument = async (req, res, next) => {
     });
   }
 };
-
 
 const fetchUserWishlist = async (req, res) => {
   try {

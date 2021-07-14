@@ -6,7 +6,7 @@ const WishlistItemSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Product",
   },
-  isInWishlist: {
+  isActive: {
     type: Boolean,
   },
 });
