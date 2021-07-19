@@ -1,5 +1,5 @@
 const { Bag } = require("../models/bag.model");
-const { populateBagProducts } = require("../utils/populateProducts.util")
+const { populateProducts } = require("../utils/populateProducts.util")
 
 const createUserBagDocument = async (req, res, next) => {
   try {
@@ -26,7 +26,7 @@ const createUserBagDocument = async (req, res, next) => {
 const fetchUserBag = async (req, res) => {
   try {
     let { bag } = req;
-    let bagItems = await populateBagProducts(bag);
+    let bagItems = await populateProducts(bag);
     res.json({ success: true, bag: bagItems });
   } catch (err) {
     res.status(500).json({
@@ -38,29 +38,11 @@ const fetchUserBag = async (req, res) => {
 };
 
 const actionOnBag = async (req, res) => {
-  const { _id, action } = req.body;
+  const { _id } = req.body;
   const { bag } = req;
-  const productExists = bag.products.some((product) => product._id == _id);
-  if (productExists) {
-    for (let product of bag.products) {
-      if (product._id == _id) {
-        switch (action.toUpperCase()) {
-          case "ADD_PRODUCT_IN_BAG": product.quantity = product.quantity + 1;
-            break;
-          case "REMOVE_PRODUCT_FROM_BAG":
-            product.isActive = false;
-            break;
-        }
-        product.quantity > 0 ? (product.isActive = true) : (product.isActive = false);
-        break;
-      }
-    }
-  } else {
-    bag.products.push({ _id, quantity: 1, isActive: true });
-  }
-
+  bag.products.push({ _id, isActive: true, quantity: 1 });
   let updatedBag = await bag.save();
-  updatedBag = await populateBagProducts(updatedBag);
+  updatedBag = await populateProducts(updatedBag);
   res.status(201).json({ success: true, bag: updatedBag });
 };
 
@@ -71,7 +53,7 @@ const emptyBag = async (req, res) => {
     product.isActive = false;
   }
   let emptyBag = await bag.save();
-  emptyBag = await populateBagProducts(emptyBag);
+  emptyBag = await populateProducts(emptyBag);
   res.json({ success: true, bag: emptyBag });
 };
 
