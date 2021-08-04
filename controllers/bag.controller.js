@@ -1,5 +1,5 @@
 const { Bag } = require("../models/bag.model");
-const { populateBagProducts } = require("../utils/populateProducts.util")
+const { extend } = require('lodash');
 
 const createUserBagDocument = async (req, res, next) => {
   try {
@@ -23,58 +23,81 @@ const createUserBagDocument = async (req, res, next) => {
   }
 };
 
-const fetchUserBag = async (req, res) => {
+
+const populateBag = async (req, res) => {
   try {
     let { bag } = req;
-    let bagItems = await populateBagProducts(bag);
-    res.json({ success: true, bag: bagItems });
-  } catch (err) {
+
+    bag = await bag
+      .populate({
+        path: 'products.product',
+        select: "availableQty brand discount discountedPrice fastDelivery image inStock name originalPrice ratings totalPurchase yogaAssured"
+      })
+      .execPopulate();
+
+    const activeProductsInBag = bag.products.filter((item) => item.isActive);
+
+    res.status(200).json({
+      products: activeProductsInBag,
+    });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({
-      success: false,
-      message: "Unable to retrive the bag",
-      errMessage: err.message,
+      message: 'Request failed please check errorMessage key for more details',
+      errorMessage: error.message,
     });
   }
 };
 
-const actionOnBag = async (req, res) => {
-  const { _id } = req.body;
-  const { bag } = req;
-  bag.products.push({ _id, isActive: true, quantity: 1 });
-  let updatedBag = await bag.save();
-  updatedBag = await populateBagProducts(updatedBag);
-  res.status(201).json({ success: true, bag: updatedBag });
-};
+const addOrUpdateProductInBag = async (req, res) => {
+  try {
+    const productUpdates = req.body;
+    const { bag } = req;
 
-const removeProductFromBag = async (req, res) => {
-  const { _id } = req.body;
-  const { bag } = req;
-  for (let product of bag.products) {
-    if (product._id == _id) {
-      product.isActive = !product.isActive;
-      break;
+    const isProductAlreadyAdded = bag.products.find(
+      (product) => product.product == productUpdates._id,
+    );
+
+    if (isProductAlreadyAdded) {
+      bag.products = bag.products.map((product) =>
+        productUpdates._id == product.product
+          ? extend(product, productUpdates)
+          : product,
+      );
+    } else {
+      bag.products.push({
+        product: productUpdates._id,
+        quantity: 1,
+        isActive: true,
+      });
     }
+    let updatedBag = await bag.save();
+    updatedBag = await updatedBag
+      .populate({
+        path: 'products.product',
+        select: "availableQty brand discount discountedPrice fastDelivery image inStock name originalPrice ratings totalPurchase yogaAssured"
+      })
+      .execPopulate();
+
+    const activeProductsInBag = updatedBag.products.filter(
+      (item) => item.isActive,
+    );
+
+    res.status(200).json({
+      products: activeProductsInBag,
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({
+      message: 'Request failed please check errorMessage key for more details',
+      errorMessage: error.message,
+    });
   }
-  let updatedBag = await bag.save();
-  updatedBag = await populateBagProducts(updatedBag);
-  res.status(201).json({ success: true, bag: updatedBag });
 };
 
-const emptyBag = async (req, res) => {
-  let { bag } = req;
-  for (let product of bag.products) {
-    product.quantity = 0;
-    product.isActive = false;
-  }
-  let emptyBag = await bag.save();
-  emptyBag = await populateBagProducts(emptyBag);
-  res.json({ success: true, bag: emptyBag });
-};
 
 module.exports = {
   createUserBagDocument,
-  fetchUserBag,
-  actionOnBag,
-  removeProductFromBag,
-  emptyBag
+  populateBag,
+  addOrUpdateProductInBag
 };

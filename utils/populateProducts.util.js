@@ -4,7 +4,34 @@ const populateProducts = async (document) => {
   return document.products.map((product) => product._id);
 };
 
-const populateBagProducts = async (bag) => {
+
+const populateCartFromDb = async (req, res) => {
+  try {
+    let { bag } = req;
+
+    bag = await bag
+      .populate({
+        path: 'products._id'
+      })
+      .execPopulate();
+
+    const activeProductsInCart = bag.products.filter((item) => item.isActive);
+
+    res.status(200).json({
+      response: {
+        products: activeProductsInCart,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Request failed please check errorMessage key for more details',
+      errorMessage: error.message,
+    });
+  }
+};
+
+/* const populateBagProducts = async (bag) => {
   bag.products = bag.products.filter((product) => product.isActive);
   bag = await bag
     .populate({
@@ -16,6 +43,6 @@ const populateBagProducts = async (bag) => {
     Object.assign(bagItem, { quantity: product.quantity });
     return bagItem;
   });
-};
+}; */
 
-module.exports = { populateProducts, populateBagProducts };
+module.exports = { populateProducts, populateCartFromDb };

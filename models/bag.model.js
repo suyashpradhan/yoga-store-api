@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const BagItemSchema = new Schema({
-  _id: {
+  product: {
     type: Schema.Types.ObjectId,
     ref: "Product",
   },
